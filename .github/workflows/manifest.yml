@@ -1,0 +1,37 @@
+name: Optional manifest
+on:
+  push:
+    paths:
+      - '**/*.webp'
+      - '**/*.png'
+      - '**/*.jpg'
+      - '**/*.jpeg'
+      - '**/*.pdf'
+      - '**/*.gif'
+      - '**/*.svg'
+jobs:
+  manifest:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build manifest.json
+        run: |
+          python3 - <<'PY'
+          import json, os
+          exts = {'.webp','.png','.jpg','.jpeg','.gif','.svg','.pdf','.mp4','.webm','.avif'}
+          files = []
+          for root, _, names in os.walk('.'):
+            if '.git' in root: continue
+            for n in names:
+              ext = os.path.splitext(n)[1].lower()
+              if ext in exts:
+                path = os.path.relpath(os.path.join(root, n), '.').replace('\\','/')
+                files.append({'path': path, 'label': n})
+          files.sort(key=lambda x: x['path'])
+          with open('manifest.json','w') as f:
+            json.dump({'files': files}, f, indent=2)
+          print(len(files), 'files')
+          PY
+      - uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "chore: update manifest.json"
