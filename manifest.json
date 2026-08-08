@@ -1,0 +1,7 @@
+{
+  "files": [
+    { "path": "projects/ejemplo/cover.webp", "label": "Cover ejemplo" },
+    { "path": "projects/ejemplo/manual.pdf", "label": "Manual PDF" },
+    { "path": "agentex/char-01.webp", "label": "Personaje 01" }
+  ]
+}
